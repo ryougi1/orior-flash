@@ -15,6 +15,7 @@ function App(): JSX.Element {
       <p className="tip">
         Please try pressing <code>F12</code> to open the devTool
       </p>
+      <p className="tip">{import.meta.env.RENDERER_VITE_TESTVARIABLE}</p>
       <div className="actions">
         <div className="action">
           <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
