@@ -3,7 +3,7 @@ import ApiCard from './apiCard'
 interface SessionCard extends ApiCard {
   isFlipped: boolean
   hasBeenFlipped: boolean
-  submittedAnswer: string
+  isCorrectAnswer: boolean | null
 }
 
 export default SessionCard

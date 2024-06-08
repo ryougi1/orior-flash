@@ -17,4 +17,11 @@
     justify-content: center;
     align-items: center;
   }
+
+  .post-session {
+    z-index: 500;
+    width: 30%;
+    height: 75%;
+    background-color: slategrey;
+  }
 }

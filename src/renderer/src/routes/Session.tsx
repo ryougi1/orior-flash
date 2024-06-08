@@ -2,12 +2,13 @@ import supabaseClient from '@renderer/api/supabaseClient'
 import { SessionCard } from '@renderer/models'
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import ImageCard from '../components/ImageCard'
+import ImageCardComponent from '../components/ImageCardComponent'
 
 function Session(): JSX.Element {
   const { state } = useLocation()
   const [cards, setCards] = useState<SessionCard[]>([])
   const [currentCardIndex, setCurrentCardIndex] = useState<number>(0)
+  const [isFinished, setIsFinished] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchDeckData = async (): Promise<void> => {
@@ -22,7 +23,7 @@ function Session(): JSX.Element {
         return
       }
       const initialCards = data.map((card) => {
-        return { ...card, isFlipped: false, hasBeenFlipped: false, submittedAnswer: '' }
+        return { ...card, isFlipped: false, hasBeenFlipped: false, isCorrectAnswer: null }
       })
       setCards(initialCards)
       setCurrentCardIndex(0)
@@ -30,20 +31,15 @@ function Session(): JSX.Element {
     fetchDeckData().catch(console.error)
   }, [])
 
-  useEffect(() => {
-    console.log('Deck updated:', cards)
-  }, [cards])
-  useEffect(() => {
-    console.log('Index updated', currentCardIndex)
-  }, [currentCardIndex])
-
-  const onNavigation = (nav: number): void => {
-    console.log('OnNavigation', nav)
-    setCurrentCardIndex(currentCardIndex + nav)
+  const navigate = (nav: number): void => {
+    const newIndex = currentCardIndex + nav
+    if (newIndex <= cards.length - 1 && newIndex >= 0) {
+      console.log('setting new index to', newIndex)
+      setCurrentCardIndex(currentCardIndex + nav)
+    }
   }
 
-  const handleCardFlip = (): void => {
-    console.log('SESSION: onCardFlip')
+  const flipCard = (): void => {
     setCards(
       cards.map((card, index) => {
         if (index === currentCardIndex) {
@@ -55,6 +51,18 @@ function Session(): JSX.Element {
     )
   }
 
+  const markAnswer = (isCorrectAnswer: boolean): void => {
+    setCards(
+      cards.map((card, index) => {
+        if (index === currentCardIndex) {
+          card.isCorrectAnswer = isCorrectAnswer
+        }
+        return card
+      })
+    )
+    navigate(1)
+  }
+
   return (
     <div className="session">
       <div className="header">
@@ -62,34 +70,60 @@ function Session(): JSX.Element {
           <p>Back to home</p>
         </Link>
       </div>
-      <div className="body">
-        <p>Number of cards: {cards.length}</p>
-        <p>Current card: {currentCardIndex + 1}</p>
 
-        {cards.length > 0 ? (
-          <ImageCard card={cards[currentCardIndex]} onCardFlip={() => handleCardFlip()} />
-        ) : (
-          <div></div>
-        )}
+      {isFinished ? (
+        <div className="post-session body">
+          RESULTS:
+          {cards.filter((card) => card.isCorrectAnswer === true).length} / {cards.length}
+          <ul>
+            {cards.map((item, index) => (
+              <li key={item.id}>
+                <div>Question: {index}</div>
+                <div>{item.back}</div>
+                <div>Answer: {item.isCorrectAnswer ? 'Correct' : 'Incorrect'}</div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div className="body">
+          <p>
+            Card: {currentCardIndex + 1}/{cards.length}
+          </p>
 
-        <button onClick={() => onNavigation(-1)} disabled={currentCardIndex === 0}>
-          Back
-        </button>
-        <button onClick={() => onNavigation(1)} disabled={currentCardIndex === cards.length - 1}>
-          Next
-        </button>
-        {/* <ul>
-        {cards.map((item) => (
-          <li key={item.id}>
-            <div>Front: {item.front}</div>
-            <div>Back: {item.back}</div>
-            <div>Is flipped: {item.isFlipped ? 'true' : 'false'}</div>
-            <div>Has been flipped: {item.hasBeenFlipped ? 'true' : 'false'}</div>
-            <div>Answer: {item.submittedAnswer}</div>
-          </li>
-        ))}
-      </ul> */}
-      </div>
+          <div>
+            <button onClick={() => navigate(-1)} disabled={currentCardIndex === 0}>
+              Back
+            </button>
+            <button onClick={() => navigate(1)} disabled={currentCardIndex === cards.length - 1}>
+              Next
+            </button>
+          </div>
+
+          {cards.length > 0 ? (
+            <ImageCardComponent card={cards[currentCardIndex]} onCardFlip={() => flipCard()} />
+          ) : (
+            <div></div>
+          )}
+
+          {cards?.length > 0 && cards[currentCardIndex].isCorrectAnswer === null ? (
+            <div>
+              <p>Mark as correct?</p>
+              <button onClick={() => markAnswer(true)}>Yes</button>
+              <button onClick={() => markAnswer(false)}>No</button>
+            </div>
+          ) : (
+            <></>
+          )}
+
+          {cards?.length > 0 &&
+          cards.filter((card) => card.isCorrectAnswer === null).length === 0 ? (
+            <button onClick={() => setIsFinished(true)}> Finish</button>
+          ) : (
+            <></>
+          )}
+        </div>
+      )}
     </div>
   )
 }

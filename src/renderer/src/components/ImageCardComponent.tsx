@@ -5,7 +5,7 @@ interface IProps {
   onCardFlip: () => void
 }
 
-function ImageCard({ card, onCardFlip }: IProps): JSX.Element {
+function ImageCardComponent({ card, onCardFlip }: IProps): JSX.Element {
   const onClick = (event): void => {
     onCardFlip()
     event.preventDefault()
@@ -26,4 +26,4 @@ function ImageCard({ card, onCardFlip }: IProps): JSX.Element {
   )
 }
 
-export default ImageCard
+export default ImageCardComponent
