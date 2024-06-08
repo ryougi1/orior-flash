@@ -1,8 +1,8 @@
 import supabaseClient from '@renderer/api/supabaseClient'
 import { SessionCard } from '@renderer/models'
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import ImageCard from './ImageCard'
+import { Link, useLocation } from 'react-router-dom'
+import ImageCard from '../components/ImageCard'
 
 function Session(): JSX.Element {
   const { state } = useLocation()
@@ -37,6 +37,11 @@ function Session(): JSX.Element {
     console.log('Index updated', currentCardIndex)
   }, [currentCardIndex])
 
+  const onNavigation = (nav: number): void => {
+    console.log('OnNavigation', nav)
+    setCurrentCardIndex(currentCardIndex + nav)
+  }
+
   const handleCardFlip = (): void => {
     console.log('SESSION: onCardFlip')
     setCards(
@@ -51,16 +56,29 @@ function Session(): JSX.Element {
   }
 
   return (
-    <>
-      <span>Number of cards: {cards.length}</span>
-      <span>Current card: {currentCardIndex + 1}</span>
+    <div className="session">
+      <div className="header">
+        <Link to="/">
+          <p>Back to home</p>
+        </Link>
+      </div>
+      <div className="body">
+        <p>Number of cards: {cards.length}</p>
+        <p>Current card: {currentCardIndex + 1}</p>
 
-      {cards.length > 0 ? (
-        <ImageCard card={cards[currentCardIndex]} onCardFlip={() => handleCardFlip()} />
-      ) : (
-        <div></div>
-      )}
-      {/* <ul>
+        {cards.length > 0 ? (
+          <ImageCard card={cards[currentCardIndex]} onCardFlip={() => handleCardFlip()} />
+        ) : (
+          <div></div>
+        )}
+
+        <button onClick={() => onNavigation(-1)} disabled={currentCardIndex === 0}>
+          Back
+        </button>
+        <button onClick={() => onNavigation(1)} disabled={currentCardIndex === cards.length - 1}>
+          Next
+        </button>
+        {/* <ul>
         {cards.map((item) => (
           <li key={item.id}>
             <div>Front: {item.front}</div>
@@ -71,7 +89,8 @@ function Session(): JSX.Element {
           </li>
         ))}
       </ul> */}
-    </>
+      </div>
+    </div>
   )
 }
 

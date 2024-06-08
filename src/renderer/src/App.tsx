@@ -1,6 +1,6 @@
 import { HashRouter, Route, Routes } from 'react-router-dom'
-import Home from './components/Home'
-import Session from './components/Session'
+import Home from './routes/Home'
+import Session from './routes/Session'
 
 function App(): JSX.Element {
   return (
