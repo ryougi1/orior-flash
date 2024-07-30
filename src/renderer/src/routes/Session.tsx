@@ -12,17 +12,30 @@ function Session(): JSX.Element {
 
   useEffect(() => {
     const fetchDeckData = async (): Promise<void> => {
-      const { data, error } = await supabaseClient
+      const { data: deckCards, error: deckCardsError } = await supabaseClient
+        .from('decks_cards')
+        .select('card_id')
+        .eq('deck_id', state.deckId)
+
+      if (deckCardsError) {
+        console.error('Error fetching deck:', deckCardsError)
+        return
+      } else if (deckCards.length === 0) {
+        console.error('No cards found for the given deck', state.deckId)
+      }
+
+      const cardIds = deckCards.map((deckCard) => deckCard.card_id)
+      const { data: cards, error: cardsError } = await supabaseClient
         .from('cards')
         .select('*')
-        .eq('deck_id', state.deckId)
-        .order('created_at', { ascending: false })
+        .in('id', cardIds)
 
-      if (error) {
-        console.error('Error fetching data:', error)
+      if (cardsError) {
+        console.error('Error fetching cards:', cardsError)
         return
       }
-      const initialCards = data.map((card) => {
+
+      const initialCards = cards.map((card) => {
         return { ...card, isFlipped: false, hasBeenFlipped: false, isCorrectAnswer: null }
       })
       setCards(initialCards)
@@ -75,7 +88,7 @@ function Session(): JSX.Element {
         <div className="post-session body">
           RESULTS:
           {cards.filter((card) => card.isCorrectAnswer === true).length} / {cards.length}
-          <ul>
+          {/* <ul>
             {cards.map((item, index) => (
               <li key={item.id}>
                 <div>Question: {index}</div>
@@ -83,7 +96,7 @@ function Session(): JSX.Element {
                 <div>Answer: {item.isCorrectAnswer ? 'Correct' : 'Incorrect'}</div>
               </li>
             ))}
-          </ul>
+          </ul> */}
         </div>
       ) : (
         <div className="body">
