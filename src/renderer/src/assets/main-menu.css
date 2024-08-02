@@ -16,10 +16,5 @@
 
   .deck-title {
     font-size: 18px;
-    color: #66c0f4;
-    text-decoration: none;
-    &:hover {
-      color: #c7d5e0;
-    }
   }
 }

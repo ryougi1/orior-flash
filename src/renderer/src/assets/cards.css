@@ -1,7 +1,9 @@
 .card {
   .front {
+    display: block;
   }
   .back {
+    display: none;
     justify-content: center;
     align-items: center;
     background-color: #171a21;
