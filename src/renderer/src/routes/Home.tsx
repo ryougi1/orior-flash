@@ -1,4 +1,3 @@
-// import electronLogo from '../assets/electron.svg'
 import { useEffect, useState } from 'react'
 import { ApiDeck } from '@renderer/models'
 import supabaseClient from '@renderer/api/supabaseClient'
@@ -24,16 +23,18 @@ function Home(): JSX.Element {
 
   return (
     <>
-      <div>Available Decks</div>
-      <ul>
-        {decks.map((item) => (
-          <li key={item.id}>
-            <Link to="/session" state={{ deckId: item.id }}>
-              <span>{item.title}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <div className="main-menu-container">
+        <div className="title">AVAILABLE DECKS</div>
+        <ul>
+          {decks.map((item) => (
+            <li key={item.id}>
+              <Link to="/session" state={{ deckId: item.id }}>
+                <span className="deck-title">{item.title}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
     </>
   )
 }

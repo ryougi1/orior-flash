@@ -1,0 +1,25 @@
+.main-menu-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .title {
+    font-size: 32px;
+    font-weight: 600;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .deck-title {
+    font-size: 18px;
+    color: #66c0f4;
+    text-decoration: none;
+    &:hover {
+      color: #c7d5e0;
+    }
+  }
+}
