@@ -35,9 +35,10 @@ function Session(): JSX.Element {
         return
       }
 
-      const initialCards = cards.map((card) => {
+      let initialCards = cards.map((card) => {
         return { ...card, isFlipped: false, hasBeenFlipped: false, isCorrectAnswer: null }
       })
+      initialCards = shuffle(initialCards)
       setCards(initialCards)
       setCurrentCardIndex(0)
     }
@@ -47,8 +48,8 @@ function Session(): JSX.Element {
   const navigate = (nav: number): void => {
     const newIndex = currentCardIndex + nav
     if (newIndex <= cards.length - 1 && newIndex >= 0) {
-      console.log('setting new index to', newIndex)
       setCurrentCardIndex(currentCardIndex + nav)
+      console.log(cards[currentCardIndex + nav])
     }
   }
 
@@ -74,6 +75,14 @@ function Session(): JSX.Element {
       })
     )
     navigate(1)
+  }
+
+  const shuffle = (cards: SessionCard[]): SessionCard[] => {
+    for (let i = cards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[cards[i], cards[j]] = [cards[j], cards[i]]
+    }
+    return cards
   }
 
   return (
