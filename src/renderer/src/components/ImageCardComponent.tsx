@@ -10,21 +10,16 @@ function ImageCardComponent({ card, onCardFlip }: IProps): JSX.Element {
   const frontRef = useRef<HTMLDivElement>(null)
   const backRef = useRef<HTMLDivElement>(null)
 
-  const onClick = (event): void => {
-    onCardFlip()
-    handleFace()
-    event.preventDefault()
-  }
-
-  const handleFace = (): void => {
-    if (frontRef.current && backRef.current) {
-      const frontImageElement = frontRef.current.querySelector('img')
-      if (!frontImageElement) {
-        return
-      }
+  if (frontRef.current && backRef.current) {
+    const frontImageElement = frontRef.current.querySelector('img')
+    if (frontImageElement) {
       if (card.isFlipped) {
-        backRef.current.style.width = `${frontImageElement.offsetWidth}px`
-        backRef.current.style.height = `${frontImageElement.offsetHeight}px`
+        const frontHeight = frontImageElement.offsetHeight
+        const frontWidth = frontImageElement.offsetWidth
+        if (frontHeight > 0 && frontWidth > 0) {
+          backRef.current.style.width = `${frontImageElement.offsetWidth}px`
+          backRef.current.style.height = `${frontImageElement.offsetHeight}px`
+        }
         frontRef.current.style.display = 'none'
         backRef.current.style.display = 'flex'
       } else {
@@ -32,6 +27,11 @@ function ImageCardComponent({ card, onCardFlip }: IProps): JSX.Element {
         backRef.current.style.display = 'none'
       }
     }
+  }
+
+  const onClick = (event): void => {
+    onCardFlip()
+    event.preventDefault()
   }
 
   return (
