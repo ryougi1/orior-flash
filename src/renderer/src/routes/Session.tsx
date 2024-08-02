@@ -100,11 +100,31 @@ function Session(): JSX.Element {
         </div>
       ) : (
         <div className="body">
+          {cards.length > 0 ? (
+            <ImageCardComponent card={cards[currentCardIndex]} onCardFlip={() => flipCard()} />
+          ) : (
+            <div></div>
+          )}
+
           <p>
             Card: {currentCardIndex + 1}/{cards.length}
           </p>
 
-          <div>
+          {/* MARK CORRECT/INCORRECT SECTION */}
+          {cards?.length > 0 && cards[currentCardIndex].isCorrectAnswer === null ? (
+            <div className="marking-section">
+              <div>Mark as correct?</div>
+              <div className="button-container">
+                <button onClick={() => markAnswer(true)}>Yes</button>
+                <button onClick={() => markAnswer(false)}>No</button>
+              </div>
+            </div>
+          ) : (
+            <></>
+          )}
+
+          {/* NAVIGATION SECTION */}
+          <div className="navigation-section">
             <button onClick={() => navigate(-1)} disabled={currentCardIndex === 0}>
               Back
             </button>
@@ -112,22 +132,6 @@ function Session(): JSX.Element {
               Next
             </button>
           </div>
-
-          {cards.length > 0 ? (
-            <ImageCardComponent card={cards[currentCardIndex]} onCardFlip={() => flipCard()} />
-          ) : (
-            <div></div>
-          )}
-
-          {cards?.length > 0 && cards[currentCardIndex].isCorrectAnswer === null ? (
-            <div>
-              <p>Mark as correct?</p>
-              <button onClick={() => markAnswer(true)}>Yes</button>
-              <button onClick={() => markAnswer(false)}>No</button>
-            </div>
-          ) : (
-            <></>
-          )}
 
           {cards?.length > 0 &&
           cards.filter((card) => card.isCorrectAnswer === null).length === 0 ? (

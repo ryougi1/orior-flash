@@ -23,4 +23,34 @@
     height: 75%;
     background-color: slategrey;
   }
+
+  .marking-section {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .button-container {
+      display: flex;
+      gap: 16px;
+      button {
+        width: 100px;
+        height: 32px;
+      }
+    }
+  }
+
+  .navigation-section {
+    position: absolute;
+    bottom: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    button {
+      width: 50px;
+      height: 24px;
+    }
+  }
 }
